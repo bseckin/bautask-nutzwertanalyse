@@ -1,0 +1,1058 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kriterienkatalog &amp; Nutzwertanalyse</title>
+<style>
+:root{
+  --bg:#f5f6f7; --surface:#fff; --line:#e0e3e7; --line-strong:#c8ccd2;
+  --ink:#15181c; --ink-2:#5c626b; --ink-3:#8b9099;
+  --accent:#2547d0; --accent-weak:#eaeefb;
+  --radius:6px;
+  --font:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+input,button{font:inherit;color:inherit}
+.num,input[type=number],td,th{font-variant-numeric:tabular-nums}
+.page{max-width:1280px;margin:0 auto;padding:32px 24px 110px}
+.masthead{border-bottom:1px solid var(--line-strong);padding-bottom:18px;margin-bottom:26px}
+.masthead h1{margin:0 0 4px;font-size:23px;font-weight:650;letter-spacing:-.015em}
+.masthead p{margin:0;color:var(--ink-2);max-width:62ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:22px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.panel-head h2{margin:0;font-size:15px;font-weight:620}
+.panel-head .sub{margin:2px 0 0;font-size:12.5px;color:var(--ink-3)}
+.panel-body{padding:18px 20px}
+.head-actions{display:flex;gap:8px;flex-shrink:0}
+.btn{border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--radius);padding:7px 13px;cursor:pointer;transition:background .12s,border-color .12s}
+.btn:hover{background:var(--bg);border-color:var(--ink-3)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:550}
+.btn-primary:hover{background:#1d3bb0;border-color:#1d3bb0}
+.btn-quiet{border-color:transparent;background:transparent;color:var(--ink-2);padding:5px 8px}
+.btn-quiet:hover{background:var(--bg);border-color:var(--line);color:var(--ink)}
+.btn-icon{border-color:transparent;background:transparent;color:var(--ink-3);padding:4px 7px;line-height:1;border-radius:4px;cursor:pointer;border:1px solid transparent}
+.btn-icon:hover{background:var(--bg);color:var(--ink)}
+.btn-icon:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.btn-icon:disabled{opacity:.3;cursor:default}
+.btn-icon:disabled:hover{background:transparent;color:var(--ink-3)}
+.band-wrap{padding:16px 20px 18px;border-bottom:1px solid var(--line)}
+.band-label{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+.band-label .t{font-size:11.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3)}
+.band-label .v{font-size:12.5px;color:var(--ink-2)}
+.band{display:flex;height:30px;border-radius:4px;overflow:hidden;background:var(--bg);border:1px solid var(--line)}
+.band-seg{display:flex;align-items:center;justify-content:center;border-right:1px solid var(--surface);background:var(--ink-3);color:#fff;font-size:11px;font-weight:550;white-space:nowrap;overflow:hidden;min-width:34px;transition:flex-grow .25s ease}
+.band-seg:last-child{border-right:none}
+.band-seg:nth-child(odd){background:var(--ink-2)}
+.band-empty{display:flex;align-items:center;justify-content:center;width:100%;color:var(--ink-3);font-size:12.5px}
+.crit{display:grid;grid-template-columns:22px minmax(150px,.95fr) minmax(200px,1.2fr) 185px auto auto;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line)}
+.crit:last-child{border-bottom:none}
+.crit.is-inactive{opacity:.45}
+.crit.is-inactive .crit-weight{visibility:hidden}
+.crit.drag-over{box-shadow:inset 0 2px 0 var(--accent)}
+.crit.dragging{opacity:.4}
+.drag-handle{cursor:grab;color:var(--ink-3);text-align:center;line-height:1;user-select:none;padding:4px 0;border-radius:4px}
+.drag-handle:hover{color:var(--ink);background:var(--bg)}
+.field{width:100%;border:1px solid transparent;background:transparent;border-radius:4px;padding:5px 7px}
+.field:hover{border-color:var(--line)}
+.field:focus{outline:none;border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px var(--accent-weak)}
+.field-name{font-weight:550}
+.field-desc{color:var(--ink-2);font-size:13px}
+.crit-weight{display:flex;align-items:center;gap:9px}
+.crit-weight .cap{font-size:11.5px;color:var(--ink-3);white-space:nowrap}
+.num-input{width:52px;border:1px solid var(--line-strong);border-radius:4px;padding:4px 6px;text-align:center;background:var(--surface)}
+.num-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-weak)}
+.row-actions{display:flex;gap:2px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;cursor:pointer;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:2px;background:var(--line-strong)}
+input[type=range]::-moz-range-track{height:3px;border-radius:2px;background:var(--line-strong)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;margin-top:-5.5px;border-radius:50%;background:var(--surface);border:2px solid var(--ink-2);transition:border-color .12s}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--surface);border:2px solid var(--ink-2)}
+input[type=range]:hover::-webkit-slider-thumb{border-color:var(--accent)}
+input[type=range]:hover::-moz-range-thumb{border-color:var(--accent)}
+input[type=range]:focus-visible::-webkit-slider-thumb{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-weak)}
+.toggle{display:inline-flex;align-items:center;gap:9px;cursor:pointer;user-select:none}
+.toggle input{position:absolute;opacity:0;width:0;height:0}
+.toggle .track{width:34px;height:19px;border-radius:10px;background:var(--line-strong);position:relative;transition:background .15s;flex-shrink:0}
+.toggle .knob{position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#fff;transition:transform .15s}
+.toggle input:checked + .track{background:var(--accent)}
+.toggle input:checked + .track .knob{transform:translateX(15px)}
+.toggle input:focus-visible + .track{outline:2px solid var(--accent);outline-offset:2px}
+.toggle .lbl{font-size:12.5px;color:var(--ink-2);width:52px}
+.alt{display:flex;align-items:center;gap:12px;padding:8px 4px;border-bottom:1px solid var(--line)}
+.alt:last-child{border-bottom:none}
+.alt .idx{width:22px;color:var(--ink-3);font-size:12px;text-align:center}
+.matrix-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+thead th{font-size:12px;font-weight:600;color:var(--ink-2);border-bottom:1px solid var(--line-strong);white-space:nowrap}
+thead th.col-alt{text-align:center;min-width:132px}
+tbody tr:last-child td{border-bottom:none}
+.crit-cell{min-width:190px}
+.crit-cell .nm{font-weight:550}
+.crit-cell .wt{font-size:12px;color:var(--ink-3)}
+.cell-score{display:flex;flex-direction:column;align-items:center;gap:3px}
+.cell-score .val{font-size:12.5px;font-weight:600;color:var(--ink-2);min-width:18px;text-align:center}
+/* Bewertung: Fokusansicht */
+.focus-nav{display:grid;grid-template-columns:34px 1fr 34px;align-items:center;gap:12px;padding:4px 0 14px;border-bottom:1px solid var(--line)}
+.focus-nav .btn-icon{font-size:20px;padding:6px 10px}
+.focus-mid{text-align:center}
+.focus-eyebrow{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.focus-title{font-size:19px;font-weight:620;letter-spacing:-.01em;margin-top:2px}
+.focus-desc{font-size:13px;color:var(--ink-2);margin-top:3px}
+.focus-question{text-align:center;font-size:13px;color:var(--ink-3);padding:16px 0 6px}
+.score-rows{display:flex;flex-direction:column}
+.score-row{display:grid;grid-template-columns:minmax(150px,1fr) auto 128px;align-items:center;gap:18px;padding:11px 4px;border-bottom:1px solid var(--line)}
+.score-row:last-child{border-bottom:none}
+.score-name{font-weight:550}
+.score-anchor{font-size:12.5px;color:var(--ink-3)}
+.seg{display:flex;border:1px solid var(--line-strong);border-radius:var(--radius);overflow:hidden}
+.seg-btn{width:44px;padding:7px 0;background:var(--surface);border:none;border-right:1px solid var(--line);cursor:pointer;color:var(--ink-2);font-variant-numeric:tabular-nums;transition:background .12s,color .12s}
+.seg-btn:last-child{border-right:none}
+.seg-btn:hover{background:var(--bg);color:var(--ink)}
+.seg-btn.is-on{background:var(--accent);color:#fff;font-weight:620}
+.seg-btn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.scale-legend{display:flex;flex-wrap:wrap;gap:14px;align-items:baseline;padding:14px 4px 0;margin-top:4px;border-top:1px solid var(--line)}
+/* Begründung je Bewertung */
+.why{border-bottom:1px solid var(--line);padding:0 4px}
+.why summary{cursor:pointer;padding:7px 0 9px;list-style:none;display:flex;align-items:center;gap:10px}
+.why summary::-webkit-details-marker{display:none}
+.why summary::after{content:'▸';color:var(--ink-3);font-size:11px}
+.why[open] summary::after{content:'▾'}
+.why summary:hover .why-lead{color:var(--ink)}
+.why summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.why-lead{font-size:12px;color:var(--ink-3)}
+.why-grade{font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;font-weight:650;padding:2px 7px;border-radius:100px;border:1px solid var(--line-strong);color:var(--ink-2);white-space:nowrap}
+.grade-stark{border-color:var(--accent);color:var(--accent);background:var(--accent-weak)}
+.grade-mittel{border-color:var(--line-strong);color:var(--ink-2)}
+.grade-schwach{border-style:dashed;color:var(--ink-3)}
+.why-body{padding:2px 0 14px;max-width:88ch}
+.why-text{margin:0 0 6px;font-size:13px;color:var(--ink-2);line-height:1.6}
+.why-src{margin:0;font-size:11.5px;color:var(--ink-3)}
+.no-evidence{font-size:12.5px;color:var(--ink-3);text-align:center;padding:8px 0 4px}
+.scale-legend-t{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.scale-item{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.overview{margin-top:18px;border-top:1px solid var(--line);padding-top:12px}
+.overview summary{cursor:pointer;font-size:13px;color:var(--ink-2);padding:4px 0;list-style:none}
+.overview summary::-webkit-details-marker{display:none}
+.overview summary::before{content:'▸ ';color:var(--ink-3)}
+.overview[open] summary::before{content:'▾ '}
+.overview summary:hover{color:var(--ink)}
+.overview summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.ov-row{cursor:pointer}
+.ov-row:hover{background:var(--bg)}
+.ov-row.is-current{background:var(--accent-weak)}
+.ov-val{text-align:center;color:var(--ink-2)}
+.result{border-bottom:1px solid var(--line)}
+.result:last-child{border-bottom:none}
+.result-head{display:grid;grid-template-columns:30px minmax(140px,210px) 1fr 92px 24px;align-items:center;gap:16px;padding:13px 4px;cursor:pointer;background:none;border:none;width:100%;text-align:left}
+.result-head:hover{background:var(--bg)}
+.result-head:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.result .rank{font-size:13px;color:var(--ink-3);text-align:center}
+.result.is-top .rank{color:var(--accent);font-weight:650}
+.result .nm{font-weight:550}
+.bar-track{height:22px;background:var(--bg);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;background:var(--ink-3);transition:width .3s ease}
+.result.is-top .bar-fill{background:var(--accent)}
+.result .total{text-align:right;font-weight:650;font-size:15px}
+.result .total .pct{display:block;font-size:11.5px;font-weight:450;color:var(--ink-3)}
+.chev{color:var(--ink-3);text-align:center;transition:transform .15s}
+.result.is-open .chev{transform:rotate(90deg)}
+.detail{padding:2px 4px 18px 46px}
+.detail table{background:var(--bg);border-radius:var(--radius)}
+.detail th,.detail td{padding:7px 12px;font-size:12.5px}
+.detail tr:last-child td{border-bottom:none}
+.detail .r{text-align:right}
+.empty{padding:32px 20px;text-align:center;border:1px dashed var(--line-strong);border-radius:var(--radius);color:var(--ink-2)}
+.empty strong{display:block;color:var(--ink);font-weight:600;margin-bottom:3px}
+.empty p{margin:0 0 14px;font-size:13px}
+.catalogs{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.catalog-chip{display:flex;align-items:center;gap:6px;border:1px solid var(--line-strong);border-radius:100px;padding:3px 5px 3px 12px;font-size:12.5px}
+.catalog-chip .load{background:none;border:none;cursor:pointer;padding:2px 0;color:var(--ink)}
+.catalog-chip .load:hover{color:var(--accent)}
+.catalogs-label{width:100%;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+dialog{border:1px solid var(--line-strong);border-radius:var(--radius);padding:0;max-width:420px;box-shadow:0 12px 40px rgba(0,0,0,.14)}
+dialog::backdrop{background:rgba(20,22,26,.35)}
+.dlg-body{padding:22px 24px 0}
+.dlg-body h3{margin:0 0 6px;font-size:15.5px;font-weight:620}
+.dlg-body p{margin:0;color:var(--ink-2);font-size:13.5px}
+.dlg-foot{display:flex;justify-content:flex-end;gap:8px;padding:20px 24px 22px}
+.dlg-input{width:100%;margin-top:14px;border:1px solid var(--line-strong);border-radius:4px;padding:8px 10px}
+.dlg-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-weak)}
+.btn-danger{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:550}
+.btn-danger:hover{background:#000;border-color:#000}
+.foot-note{margin-top:14px;font-size:12px;color:var(--ink-3)}
+/* Ergebnis als Hero */
+.panel-hero{border-color:var(--line-strong);box-shadow:0 1px 3px rgba(20,22,26,.05)}
+.panel-hero .panel-head h2{font-size:17px}
+.panel-hero .result-head{padding:15px 4px}
+.panel-hero .result .total{font-size:17px}
+/* Sticky-Rangleiste, erscheint erst wenn das Ergebnis weggescrollt ist */
+.sticky-rank{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;align-items:center;gap:18px;
+  padding:10px 24px;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);
+  border-top:1px solid var(--line-strong);box-shadow:0 -2px 12px rgba(20,22,26,.06)}
+.sticky-rank[hidden]{display:none}
+.sticky-label{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);font-weight:600;white-space:nowrap}
+.sticky-items{display:flex;gap:20px;flex:1;overflow-x:auto}
+.sticky-item{display:flex;align-items:baseline;gap:7px;white-space:nowrap;font-size:13px}
+.sticky-item .r{color:var(--ink-3);font-size:11.5px}
+.sticky-item .n{color:var(--ink-2)}
+.sticky-item .v{font-weight:650;font-variant-numeric:tabular-nums}
+.sticky-item.is-top .r,.sticky-item.is-top .v{color:var(--accent)}
+.sticky-item.is-top .n{color:var(--ink);font-weight:550}
+.saving{font-size:11.5px;color:var(--ink-3);align-self:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:1080px){
+  .page{padding:24px 16px 64px}
+  .crit{grid-template-columns:22px minmax(140px,1fr) 175px auto auto}
+  .crit .field-desc{display:none}
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="masthead">
+    <h1>Kriterienkatalog &amp; Nutzwertanalyse</h1>
+    <p>Requirements-Tooling-Auswahl für bautask.de. Aktivieren Sie nur die Kriterien, die zählen — die Gewichte der aktiven werden automatisch auf 100&nbsp;% normalisiert. <strong>Der Stand wird zentral gespeichert:</strong> Änderungen sind für alle sichtbar, die diese Adresse öffnen.</p>
+  </header>
+
+  <section class="panel panel-hero" id="panel-results">
+    <div class="panel-head">
+      <div><h2>Ergebnis</h2><p class="sub">Gewichteter Gesamtnutzwert, absteigend sortiert.</p></div>
+      <div class="head-actions">
+        <button class="btn btn-quiet" id="btn-reset">Alles zurücksetzen</button>
+        <button class="btn" id="btn-csv">Als CSV exportieren</button>
+      </div>
+    </div>
+    <div class="panel-body"><div id="results"></div></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>Kriterien</h2><p class="sub" id="crit-sub"></p></div>
+      <div class="head-actions">
+        <span class="saving" id="save-state"></span>
+        <button class="btn btn-quiet" id="btn-save-catalog">Als Vorlage speichern</button>
+        <button class="btn btn-primary" id="btn-add-crit">Kriterium hinzufügen</button>
+      </div>
+    </div>
+    <div class="band-wrap" id="band-wrap"></div>
+    <div class="panel-body"><div id="crit-list"></div><div id="catalog-list"></div></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>Alternativen</h2><p class="sub" id="alt-sub"></p></div>
+      <div class="head-actions"><button class="btn btn-primary" id="btn-add-alt">Alternative hinzufügen</button></div>
+    </div>
+    <div class="panel-body"><div id="alt-list"></div></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>Bewertung</h2><p class="sub">Ein Kriterium nach dem anderen — alle Alternativen direkt vergleichbar.</p></div>
+    </div>
+    <div class="panel-body"><div id="matrix"></div></div>
+  </section>
+
+
+  <div class="sticky-rank" id="sticky-rank" hidden>
+    <span class="sticky-label">Aktuelle Rangfolge</span>
+    <div class="sticky-items" id="sticky-items"></div>
+    <button class="btn-icon" id="sticky-up" title="Zum vollständigen Ergebnis">↑</button>
+  </div>
+</main>
+
+<dialog id="dlg-confirm">
+  <div class="dlg-body"><h3 id="dlg-confirm-title"></h3><p id="dlg-confirm-text"></p></div>
+  <div class="dlg-foot">
+    <button class="btn" id="dlg-confirm-cancel">Abbrechen</button>
+    <button class="btn btn-danger" id="dlg-confirm-ok">Löschen</button>
+  </div>
+</dialog>
+
+<dialog id="dlg-prompt">
+  <div class="dlg-body">
+    <h3>Vorlage speichern</h3>
+    <p>Die aktuellen Kriterien inklusive Gewichtung und Aktiv-Status werden gesichert.</p>
+    <input class="dlg-input" id="dlg-prompt-input" placeholder="Name der Vorlage" />
+  </div>
+  <div class="dlg-foot">
+    <button class="btn" id="dlg-prompt-cancel">Abbrechen</button>
+    <button class="btn btn-primary" id="dlg-prompt-ok">Speichern</button>
+  </div>
+</dialog>
+
+<script>
+const MAX_SCORE = 5;
+/** Ankertexte der Bewertungsskala — jede Stufe ist benennbar, keine Scheinpräzision. */
+const SCALE = [
+  [0, 'Nicht vorhanden'],
+  [1, 'Sehr schwach'],
+  [2, 'Schwach'],
+  [3, 'Ausreichend'],
+  [4, 'Gut'],
+  [5, 'Sehr gut']
+];
+const API = 'https://n8n.berkayseckin.at/webhook/nwa';
+const $ = s => document.querySelector(s);
+const uid = () => Math.random().toString(36).slice(2, 10);
+const key = (c, a) => c + '::' + a;
+
+let state = { criteria: [], alternatives: [], scores: {}, catalogs: [] };
+const openDetails = new Set();
+
+/* ---------- Startdaten: Requirements-Tooling bautask.de ----------
+   Gewichte aus der Tier-Einstufung übertragen (Sehr hoch 8 / Hoch 6 / Mittel 4 /
+   Niedrig 2) — das Verhältnis 4:3:2:1 bleibt erhalten, die normalisierten Prozente
+   entsprechen exakt der Analyse. Punktwerte von der 0–5- auf die 0–10-Skala skaliert.
+   * = im Dokument als schwach belegt markiert und bereits konservativ angesetzt.        */
+const SEED = {
+  criteria: [
+    ['Traceability', 'Kundenwunsch → Requirement → Dev-Ticket nachvollziehbar', 8],
+    ['Priorisierung', 'Natives Scoring-Framework statt Freitextfeld', 6],
+    ['UX für PM', 'Bedienbarkeit für nicht-technische Projektmanager', 6],
+    ['Dev-Tauglichkeit', 'Täglicher Ticket-Workflow für die 4 Entwickler', 6],
+    ['Skalierung / Overhead', 'Passend für 15 Personen, kein Enterprise-Ballast', 6],
+    ['Pipedrive-/n8n-Anbindung', 'Native oder über n8n/Zapier realisierbare Integration', 4],
+    ['KI-Fähigkeit', 'KI-gestützte Anforderungs-Umformulierung erreichbar', 4],
+    ['Preis-Leistung', 'Preis bei 15 Nutzern im Verhältnis zum Funktionsumfang', 4],
+    ['Entscheidungs-/Eskalationsmechanismus', 'Formaler Freigabe-Schritt bei Uneinigkeit über Priorität', 4],
+    ['Exportierbarkeit / Lock-in-Risiko', 'Vollständiger Datenexport bei späterem Wechsel', 4],
+    ['Migrationsaufwand', 'Aufwand für Übernahme der Pipedrive-Altdaten', 2]
+  ],
+  alternatives: [
+    ['Jira Product Discovery', [5, 5, 2, 3, 3, 2, 3, 3, 0, 4, 2]],
+    ['Plane.so',               [3, 1, 2, 4, 5, 2, 3, 5, 3, 5, 2]],
+    ['Linear',                 [2, 1, 2, 5, 4, 5, 2, 4, 0, 3, 2]],
+    ['Fibery',                 [3, 4, 1, 2, 3, 0, 2, 3, 2, 2, 2]],
+    ['airfocus (+ Jira)',      [3, 5, 1, 2, 2, 2, 2, 1, 1, 2, 2]]
+  ]
+};
+
+/* ---------- Belege für die höchstgewichteten Kriterien ----------
+   Reihenfolge je Kriterium: JPD, Plane.so, Linear, Fibery, airfocus.
+   grade: 'stark' = Herstellerdoku oder mehrfach unabhängig bestätigt,
+          'mittel' = Einzelquelle bzw. Fachartikel, 'schwach' = keine belastbare Quelle gefunden. */
+const EVIDENCE = {
+  'Traceability': [
+    {g:'mittel', t:'Native Traceability-Views und Reports, Zwei-Wege-Verknüpfung JPD-Idee → Jira-Issue; Requirement-zu-Delivery-Kette ist das Kernversprechen des Produkts.', s:'Atlassian Produktdoku & JPD-Handbook'},
+    {g:'stark',  t:'Sub-Work-Items und Relations vorhanden; zusätzlich verknüpft die Customers-Funktion Kundenanfragen direkt mit Work Items — näher am Pipedrive-Fall als bei den anderen. Kein Matrix-Reporting.', s:'docs.plane.so/customers'},
+    {g:'mittel', t:'Nur Sub-Issues und Relations (blocks / blocked-by / relates-to). Traceability zielt auf Code und Pull Requests, nicht auf Kundenwunsch → Requirement.', s:'Linear Docs'},
+    {g:'mittel', t:'Relations frei modellierbar, eine echte Traceability-Matrix lässt sich bauen — aber nichts davon ist vorgefertigt, alles Eigenmodellierung.', s:'Fibery Produktseite / Templates'},
+    {g:'stark',  t:'Über die Jira-Integration: Issues importieren und Items inklusive Priorität als Epic oder Story zurückschreiben. Detailliertes Feldmapping dokumentiert, aber Delivery bleibt in Jira.', s:'help.lucid.co — airfocus-Jira-Integration'}
+  ],
+  'Priorisierung': [
+    {g:'stark',  t:'RICE, Impact/Effort, MoSCoW und gewichtete Custom-Formeln nativ im Produkt; Priorisierung ist im Datenmodell verankert, nicht optionales Freitextfeld.', s:'Atlassian Prioritization Handbook; Community-Guide „Mastering prioritization with RICE"'},
+    {g:'stark',  t:'Nur ein fünfstufiges Priority-Feld (Urgent/High/Medium/Low/None). Custom Properties können Zahlen aufnehmen, aber nicht rechnen — der Wunsch nach Formel-Feldern ist seit 2024 offen.', s:'docs.plane.so — Work item properties; GitHub-Discussion makeplane/plane'},
+    {g:'stark',  t:'Vierstufiges Prioritätsfeld ohne Scoring-Framework. Für Dev-Backlogs gedacht, nicht für Product Discovery.', s:'linear.app/docs/priority'},
+    {g:'mittel', t:'Product-Management-Template mit fertigem RICE-, MoSCoW- und WSJF-Rechner — nicht im Kern-Datenmodell, aber von Fibery selbst gepflegt und übernehmbar.', s:'Fibery Templates / Blog „How to Prioritize Requirements"'},
+    {g:'stark',  t:'Priorisierung ist das Kernprodukt: Priority Ratings, frei definierbare Prioritätsformel, Prioritization Chart und Priority Poker.', s:'airfocus Feature- und Preisseite'}
+  ],
+  'UX für PM': [
+    {g:'mittel', t:'Mehrfach unabhängig als für Nicht-Techniker abschreckend beschrieben („intimidating for non-tech folks", „less approachable for non-technical stakeholders", „admin-heavy if over-customized"). Meinungsquellen, aber wiederkehrendes Muster.', s:'Tool-Vergleichsartikel; LinkedIn-Beitrag eines Produktmanagers'},
+    {g:'schwach', t:'Widersprüchliche Lage: Plane positioniert sich selbst als „für alle Teams", eine unabhängige Bewertung stuft den Rollen-Fit für PMs jedoch niedriger ein als bei Linear. Konservativ angesetzt, nicht belastbar belegt.', s:'plane.so (Eigenangabe) vs. ideaplan.io-Toolbewertung'},
+    {g:'mittel', t:'Konsistent als auf Engineering/Product/Design zugeschnitten beschrieben. Ein Praxisbericht schildert ein Nicht-Dev-Team, das nach drei Wochen und zwei Schulungen aufgab.', s:'Praxisbericht Linear-Review 2026'},
+    {g:'stark',  t:'Stärkster Einzelbeleg der gesamten Recherche — und er stammt von Fibery selbst: ein zahlender Kunde beschreibt das Onboarding nicht-technischer Mitarbeiter als schwierig, das Tool als „difficult to learn and master", die völlige Flexibilität als überfordernd.', s:'Fibery-eigene Kundenfeedback-Seite'},
+    {g:'schwach', t:'Keine belastbaren Praxisberichte zur Bedienbarkeit durch Nicht-Techniker gefunden. Nach dem konservativen Prinzip niedrig angesetzt — das ist eine Wissenslücke, keine belegte Schwäche.', s:'keine Quelle gefunden'}
+  ],
+  'Dev-Tauglichkeit': [
+    {g:'mittel', t:'Discovery-Ebene ist von der Delivery getrennt; der Dev-Workflow läuft in Jira Software, das dafür etabliert ist. JPD selbst ist kein Ticket-Tool.', s:'Atlassian Produktarchitektur'},
+    {g:'mittel', t:'Vollwertiges Issue-Tracking mit Cycles, Modules und Git-Anbindung; self-hostbar. Weniger dev-optimiert als Linear.', s:'plane.so Produktseiten'},
+    {g:'stark',  t:'Für Entwicklerteams gebaut: geringe Reibung, starke GitHub-Anbindung, Coding Sessions und Agenten. Der klare Referenzpunkt in dieser Kategorie.', s:'linear.app Integrations & Changelog'},
+    {g:'schwach', t:'Kein dedizierter Entwickler-Workflow; ein Dev-Prozess müsste selbst modelliert werden. Aus der Produktausrichtung abgeleitet, nicht durch Praxisberichte belegt.', s:'aus Produktpositionierung abgeleitet'},
+    {g:'schwach', t:'Keine eigene Delivery-Ebene — setzt Jira darunter voraus. Keine Praxisberichte zur Dev-Nutzung gefunden.', s:'keine Quelle gefunden'}
+  ],
+  'Skalierung / Overhead': [
+    {g:'schwach', t:'Free-Tarif für 3 Creator, danach 10 $/Creator — grundsätzlich auch für einzelne Teams gedacht. Der Overhead-Verdacht stammt aus denselben UX-Quellen wie K3, nicht aus einer eigenen Betrachtung der Teamgröße.', s:'Atlassian Preisseite; abgeleitet'},
+    {g:'mittel', t:'Free bis 12 Nutzer, danach 6–13 $/Nutzer; Community Edition self-hostbar. Für ein 15-Personen-Team ohne Governance-Zwang am wenigsten Ballast.', s:'plane.so/pricing'},
+    {g:'mittel', t:'Bewusst schlank gehalten; ein Review nennt allerdings eine Grenze bei etwa 50 Personen für cross-funktionale Nutzung.', s:'Linear-Review 2026'},
+    {g:'schwach', t:'12–20 $/Nutzer, technisch für kleine Teams geeignet. Der Aufwand liegt in der Modellierung, nicht in der Lizenzstruktur — nicht eigenständig recherchiert.', s:'fibery.com/pricing; abgeleitet'},
+    {g:'mittel', t:'59–79 $ pro Editor und Monat, zusätzlich zu Jira. Mehrere unabhängige Quellen bestätigen dieses Preisband — für 15 Personen unverhältnismäßig.', s:'Software Advice; project-management.com; RoadmapHero'}
+  ]
+};
+
+function seedState() {
+  const s = { criteria: [], alternatives: [], scores: {}, catalogs: [] };
+  SEED.criteria.forEach(([name, description, weight]) => {
+    s.criteria.push({ id: uid(), name, description, weight, active: true });
+  });
+  SEED.alternatives.forEach(([name, vals]) => {
+    const alt = { id: uid(), name };
+    s.alternatives.push(alt);
+    vals.forEach((v, i) => { s.scores[key(s.criteria[i].id, alt.id)] = v; });
+  });
+  s.catalogs.push({
+    id: uid(), name: 'bautask.de Tool-Auswahl', savedAt: Date.now(),
+    criteria: s.criteria.map(c => Object.assign({}, c))
+  });
+  return s;
+}
+
+/* ---------- Persistenz (Artifact-Storage, mit In-Memory-Fallback) ---------- */
+let saveTimer = null, storageOk = true, lastSaved = null;
+
+function flagSaved(text) {
+  const el = $('#save-state');
+  el.textContent = text;
+  if (text === 'Gespeichert') setTimeout(() => { if (el.textContent === 'Gespeichert') el.textContent = ''; }, 1600);
+}
+
+/* Serverseitig speichern — der Stand liegt in n8n, nicht im Browser.
+   Deshalb ist er in jedem Browser und auf jedem Gerät derselbe. */
+async function persist() {
+  clearTimeout(saveTimer);
+  flagSaved('Speichert …');
+  saveTimer = setTimeout(async () => {
+    const body = JSON.stringify(state);
+    try {
+      const res = await fetch(API + '-save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: body
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      lastSaved = body;
+      storageOk = true;
+      flagSaved('Gespeichert');
+    } catch (e) {
+      storageOk = false;
+      flagSaved('Nicht gespeichert — offline?');
+    }
+  }, 600);
+}
+
+/* Stand vom Server holen — dadurch ist er in jedem Browser und auf jedem Gerät gleich. */
+async function loadState() {
+  try {
+    const res = await fetch(API + '-state', { cache: 'no-store' });
+    if (res.ok) {
+      const p = await res.json();
+      if (p && p.criteria && p.criteria.length) {
+        state = {
+          criteria: p.criteria, alternatives: p.alternatives || [],
+          scores: p.scores || {}, catalogs: p.catalogs || []
+        };
+        lastSaved = JSON.stringify(state);
+        flagSaved('Geladen');
+        return;
+      }
+    }
+  } catch (e) {
+    flagSaved('Server nicht erreichbar');
+  }
+  state = seedState();
+  persist();
+}
+
+/* Warnen, wenn beim Verlassen noch ungespeicherte Änderungen offen sind. */
+window.addEventListener('beforeunload', e => {
+  if (!storageOk || (saveTimer && JSON.stringify(state) !== lastSaved)) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
+/* ---------- Berechnung ---------- */
+const activeCriteria = () => state.criteria.filter(c => c.active);
+
+function normalizedWeights() {
+  const active = activeCriteria();
+  const sum = active.reduce((a, c) => a + c.weight, 0);
+  const m = new Map();
+  active.forEach(c => m.set(c.id, sum === 0 ? 0 : (c.weight / sum) * 100));
+  return m;
+}
+
+const getScore = (c, a) => state.scores[key(c, a)] || 0;
+
+function computeResults() {
+  const active = activeCriteria(), w = normalizedWeights();
+  return state.alternatives.map(alt => {
+    const contributions = active.map(c => {
+      const nw = w.get(c.id) || 0, raw = getScore(c.id, alt.id);
+      return { name: c.name, nw, raw, contribution: (raw * nw) / 100 };
+    });
+    const total = contributions.reduce((a, c) => a + c.contribution, 0);
+    return { id: alt.id, name: alt.name, total, percent: (total / MAX_SCORE) * 100, contributions };
+  }).sort((a, b) => b.total - a.total);
+}
+
+/* ---------- DOM-Helfer ---------- */
+function el(tag, cls, text) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text !== undefined) n.textContent = text;
+  return n;
+}
+
+function confirmDialog(title, text, okLabel) {
+  const dlg = $('#dlg-confirm');
+  $('#dlg-confirm-title').textContent = title;
+  $('#dlg-confirm-text').textContent = text;
+  const ok = $('#dlg-confirm-ok'), cancel = $('#dlg-confirm-cancel');
+  ok.textContent = okLabel || 'Löschen';
+  return new Promise(resolve => {
+    const done = v => { ok.onclick = null; cancel.onclick = null; dlg.close(); resolve(v); };
+    ok.onclick = () => done(true);
+    cancel.onclick = () => done(false);
+    dlg.showModal();
+  });
+}
+
+function promptDialog(def) {
+  const dlg = $('#dlg-prompt'), input = $('#dlg-prompt-input');
+  input.value = def;
+  return new Promise(resolve => {
+    const ok = $('#dlg-prompt-ok'), cancel = $('#dlg-prompt-cancel');
+    const done = v => { ok.onclick = null; cancel.onclick = null; input.onkeydown = null; dlg.close(); resolve(v); };
+    ok.onclick = () => done(input.value.trim() || null);
+    cancel.onclick = () => done(null);
+    input.onkeydown = e => { if (e.key === 'Enter') done(input.value.trim() || null); };
+    dlg.showModal(); input.focus(); input.select();
+  });
+}
+
+/* ---------- Gewichtungsband ---------- */
+function renderBand() {
+  const wrap = $('#band-wrap'); wrap.innerHTML = '';
+  const active = activeCriteria(), w = normalizedWeights();
+
+  const label = el('div', 'band-label');
+  label.append(el('span', 't', 'Gewichtsverteilung der aktiven Kriterien'));
+  label.append(el('span', 'v', active.length === 0
+    ? 'Keine aktiven Kriterien'
+    : active.length + ' von ' + state.criteria.length + ' aktiv · normalisiert auf 100 %'));
+  wrap.append(label);
+
+  const band = el('div', 'band');
+  if (active.length === 0) {
+    band.append(el('div', 'band-empty', 'Aktivieren Sie mindestens ein Kriterium.'));
+  } else {
+    active.forEach(c => {
+      const pct = w.get(c.id) || 0;
+      const seg = el('div', 'band-seg');
+      seg.style.flexGrow = String(Math.max(pct, 0.001));
+      seg.style.flexBasis = '0';
+      seg.title = c.name + ' — ' + pct.toFixed(1) + ' %';
+      seg.textContent = pct >= 6 ? pct.toFixed(0) + ' %' : '·';
+      band.append(seg);
+    });
+  }
+  wrap.append(band);
+}
+
+/* ---------- Kriterien ---------- */
+let draggedId = null;
+
+function criterionRow(c, i, total) {
+  const row = el('div', 'crit' + (c.active ? '' : ' is-inactive'));
+  row.dataset.id = c.id;
+  row.draggable = true;
+
+  const handle = el('div', 'drag-handle', '⣿');
+  handle.title = 'Ziehen zum Umsortieren';
+  row.append(handle);
+
+  const name = el('input', 'field field-name');
+  name.value = c.name;
+  name.setAttribute('aria-label', 'Name des Kriteriums');
+  name.oninput = () => { c.name = name.value; onEdit(); };
+  row.append(name);
+
+  const desc = el('input', 'field field-desc');
+  desc.value = c.description || '';
+  desc.placeholder = 'Kurzbeschreibung (optional)';
+  desc.setAttribute('aria-label', 'Kurzbeschreibung');
+  if (c.description) desc.title = c.description;
+  desc.oninput = () => { c.description = desc.value; desc.title = desc.value; persist(); };
+  row.append(desc);
+
+  const ww = el('div', 'crit-weight');
+  ww.append(el('span', 'cap', 'Gewicht'));
+  const slider = el('input');
+  slider.type = 'range'; slider.min = '1'; slider.max = '10'; slider.step = '1';
+  slider.value = String(c.weight);
+  slider.setAttribute('aria-label', 'Gewichtung von ' + c.name);
+  const box = el('input', 'num-input');
+  box.type = 'number'; box.min = '1'; box.max = '10'; box.value = String(c.weight);
+  box.setAttribute('aria-label', 'Gewichtung von ' + c.name + ' als Zahl');
+
+  const apply = (v, syncSlider, syncBox) => {
+    const n = Math.min(10, Math.max(1, Math.round(v || 1)));
+    if (syncSlider) slider.value = String(n);
+    if (syncBox) box.value = String(n);
+    c.weight = n;
+    onEdit();
+  };
+  slider.oninput = () => apply(Number(slider.value), false, true);
+  box.oninput = () => apply(Number(box.value), true, false);
+  box.onblur = () => apply(Number(box.value), true, true);
+  ww.append(slider, box);
+  row.append(ww);
+
+  const toggle = el('label', 'toggle');
+  const cb = el('input'); cb.type = 'checkbox'; cb.checked = c.active;
+  cb.onchange = () => { c.active = cb.checked; persist(); renderAll(); };
+  const track = el('span', 'track'); track.append(el('span', 'knob'));
+  toggle.append(cb, track, el('span', 'lbl', c.active ? 'Aktiv' : 'Inaktiv'));
+  toggle.title = c.active ? 'Kriterium fließt in die Bewertung ein' : 'Kriterium ist ausgeblendet und zählt nicht';
+  row.append(toggle);
+
+  const actions = el('div', 'row-actions');
+  const up = el('button', 'btn-icon', '↑');
+  up.title = 'Nach oben'; up.disabled = i === 0;
+  up.onclick = () => { move(c.id, -1); };
+  const down = el('button', 'btn-icon', '↓');
+  down.title = 'Nach unten'; down.disabled = i === total - 1;
+  down.onclick = () => { move(c.id, 1); };
+  const del = el('button', 'btn-icon', '×');
+  del.title = 'Kriterium löschen';
+  del.onclick = async () => {
+    if (await confirmDialog('Kriterium löschen?', '„' + c.name + '" wird entfernt, zusammen mit allen dazu vergebenen Punktwerten.')) {
+      state.criteria = state.criteria.filter(x => x.id !== c.id);
+      Object.keys(state.scores).forEach(k => { if (k.startsWith(c.id + '::')) delete state.scores[k]; });
+      persist(); renderAll();
+    }
+  };
+  actions.append(up, down, del);
+  row.append(actions);
+  return row;
+}
+
+function move(id, dir) {
+  const i = state.criteria.findIndex(c => c.id === id), j = i + dir;
+  if (i < 0 || j < 0 || j >= state.criteria.length) return;
+  const [item] = state.criteria.splice(i, 1);
+  state.criteria.splice(j, 0, item);
+  persist(); renderAll();
+}
+
+function renderCriteria() {
+  const list = $('#crit-list'); list.innerHTML = '';
+  updateCritSub();
+
+  if (state.criteria.length === 0) {
+    const e = el('div', 'empty');
+    e.append(el('strong', null, 'Noch keine Kriterien'));
+    e.append(el('p', null, 'Legen Sie die Kriterien an, nach denen Sie entscheiden möchten.'));
+    const b = el('button', 'btn btn-primary', 'Erstes Kriterium anlegen');
+    b.onclick = addCriterion;
+    e.append(b);
+    list.append(e);
+  } else {
+    state.criteria.forEach((c, i) => list.append(criterionRow(c, i, state.criteria.length)));
+  }
+  renderCatalogs();
+}
+
+function updateCritSub() {
+  const active = activeCriteria();
+  $('#crit-sub').textContent = state.criteria.length === 0
+    ? 'Noch kein Kriterium angelegt.'
+    : active.length + ' aktiv, ' + (state.criteria.length - active.length) + ' ausgeblendet.';
+}
+
+function setupDrag() {
+  const list = $('#crit-list');
+  list.addEventListener('dragstart', e => {
+    const row = e.target.closest('.crit'); if (!row) return;
+    draggedId = row.dataset.id; row.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', draggedId);
+  });
+  list.addEventListener('dragend', () => {
+    draggedId = null;
+    list.querySelectorAll('.crit').forEach(r => r.classList.remove('dragging', 'drag-over'));
+  });
+  list.addEventListener('dragover', e => {
+    e.preventDefault();
+    const row = e.target.closest('.crit');
+    list.querySelectorAll('.crit').forEach(r => r.classList.remove('drag-over'));
+    if (row && row.dataset.id !== draggedId) row.classList.add('drag-over');
+    e.dataTransfer.dropEffect = 'move';
+  });
+  list.addEventListener('drop', e => {
+    e.preventDefault();
+    const row = e.target.closest('.crit');
+    if (!row || !draggedId || row.dataset.id === draggedId) return;
+    const from = state.criteria.findIndex(c => c.id === draggedId);
+    const to = state.criteria.findIndex(c => c.id === row.dataset.id);
+    if (from < 0 || to < 0) return;
+    const [item] = state.criteria.splice(from, 1);
+    state.criteria.splice(to, 0, item);
+    persist(); renderAll();
+  });
+}
+
+/* ---------- Vorlagen ---------- */
+function renderCatalogs() {
+  const wrap = $('#catalog-list'); wrap.innerHTML = '';
+  if (state.catalogs.length === 0) return;
+  const box = el('div', 'catalogs');
+  box.append(el('span', 'catalogs-label', 'Gespeicherte Vorlagen'));
+  state.catalogs.forEach(cat => {
+    const chip = el('div', 'catalog-chip');
+    const load = el('button', 'load', cat.name + ' · ' + cat.criteria.length);
+    load.title = 'Vorlage laden — ersetzt die aktuellen Kriterien';
+    load.onclick = async () => {
+      if (await confirmDialog('Vorlage laden?', 'Die aktuellen Kriterien und alle vergebenen Punktwerte werden durch „' + cat.name + '" ersetzt.', 'Laden')) {
+        state.criteria = cat.criteria.map(c => Object.assign({}, c, { id: uid() }));
+        state.scores = {};
+        persist(); renderAll();
+      }
+    };
+    const del = el('button', 'btn-icon', '×');
+    del.title = 'Vorlage löschen';
+    del.onclick = async () => {
+      if (await confirmDialog('Vorlage löschen?', '„' + cat.name + '" wird entfernt.')) {
+        state.catalogs = state.catalogs.filter(x => x.id !== cat.id);
+        persist(); renderAll();
+      }
+    };
+    chip.append(load, del);
+    box.append(chip);
+  });
+  wrap.append(box);
+}
+
+/* ---------- Alternativen ---------- */
+function renderAlternatives() {
+  const list = $('#alt-list'); list.innerHTML = '';
+  $('#alt-sub').textContent = state.alternatives.length === 0
+    ? 'Noch keine Alternative angelegt.'
+    : state.alternatives.length + ' Alternative' + (state.alternatives.length === 1 ? '' : 'n') + ' im Vergleich.';
+
+  if (state.alternatives.length === 0) {
+    const e = el('div', 'empty');
+    e.append(el('strong', null, 'Noch keine Alternativen'));
+    e.append(el('p', null, 'Fügen Sie die Optionen hinzu, zwischen denen Sie wählen.'));
+    const b = el('button', 'btn btn-primary', 'Erste Alternative anlegen');
+    b.onclick = addAlternative;
+    e.append(b);
+    list.append(e);
+    return;
+  }
+
+  state.alternatives.forEach((a, i) => {
+    const row = el('div', 'alt');
+    row.append(el('span', 'idx', String(i + 1)));
+    const name = el('input', 'field field-name');
+    name.value = a.name;
+    name.setAttribute('aria-label', 'Name der Alternative');
+    name.oninput = () => { a.name = name.value; persist(); renderMatrix(); renderResults(); };
+    row.append(name);
+    const del = el('button', 'btn-icon', '×');
+    del.title = 'Alternative löschen';
+    del.onclick = async () => {
+      if (await confirmDialog('Alternative löschen?', '„' + a.name + '" wird entfernt, zusammen mit allen dazu vergebenen Punktwerten.')) {
+        state.alternatives = state.alternatives.filter(x => x.id !== a.id);
+        Object.keys(state.scores).forEach(k => { if (k.endsWith('::' + a.id)) delete state.scores[k]; });
+        persist(); renderAll();
+      }
+    };
+    row.append(del);
+    list.append(row);
+  });
+}
+
+/* ---------- Bewertung: Fokusansicht je Kriterium ---------- */
+let focusIndex = 0;
+
+const gradeLabel = g => g === 'stark' ? 'Belegt' : g === 'mittel' ? 'Teilweise belegt' : 'Nicht belegt';
+
+function renderMatrix() {
+  const host = $('#matrix'); host.innerHTML = '';
+  const active = activeCriteria(), w = normalizedWeights();
+
+  if (active.length === 0 || state.alternatives.length === 0) {
+    const e = el('div', 'empty');
+    e.append(el('strong', null, 'Bewertung noch nicht möglich'));
+    e.append(el('p', null, active.length === 0
+      ? 'Aktivieren Sie mindestens ein Kriterium, um Punkte zu vergeben.'
+      : 'Legen Sie mindestens eine Alternative an, um Punkte zu vergeben.'));
+    host.append(e);
+    return;
+  }
+
+  if (focusIndex >= active.length) focusIndex = active.length - 1;
+  if (focusIndex < 0) focusIndex = 0;
+  const c = active[focusIndex];
+
+  /* Navigation: welches Kriterium wird gerade bewertet */
+  const nav = el('div', 'focus-nav');
+  const prev = el('button', 'btn-icon', '‹');
+  prev.title = 'Vorheriges Kriterium';
+  prev.disabled = focusIndex === 0;
+  prev.onclick = () => { focusIndex--; renderMatrix(); };
+
+  const mid = el('div', 'focus-mid');
+  const eyebrow = el('div', 'focus-eyebrow',
+    'Kriterium ' + (focusIndex + 1) + ' von ' + active.length + ' · ' +
+    (w.get(c.id) || 0).toFixed(1) + ' % Gewicht');
+  const title = el('div', 'focus-title', c.name);
+  mid.append(eyebrow, title);
+  if (c.description) mid.append(el('div', 'focus-desc', c.description));
+
+  const next = el('button', 'btn-icon', '›');
+  next.title = 'Nächstes Kriterium';
+  next.disabled = focusIndex === active.length - 1;
+  next.onclick = () => { focusIndex++; renderMatrix(); };
+
+  nav.append(prev, mid, next);
+  host.append(nav);
+
+  host.append(el('div', 'focus-question',
+    'Wie gut erfüllt jede Alternative dieses eine Kriterium?'));
+
+  if (!EVIDENCE[c.name]) {
+    host.append(el('div', 'no-evidence',
+      'Für dieses Kriterium sind keine Einzelbegründungen hinterlegt — belegt sind nur die fünf höchstgewichteten Kriterien.'));
+  }
+
+  /* Eine Zeile je Alternative, feste Stufen statt Slider */
+  const rows = el('div', 'score-rows');
+  state.alternatives.forEach(a => {
+    const row = el('div', 'score-row');
+    row.append(el('div', 'score-name', a.name));
+
+    const seg = el('div', 'seg');
+    seg.setAttribute('role', 'radiogroup');
+    seg.setAttribute('aria-label', a.name + ': Bewertung für ' + c.name);
+    const current = getScore(c.id, a.id);
+
+    SCALE.forEach(([val, label]) => {
+      const b = el('button', 'seg-btn' + (current === val ? ' is-on' : ''), String(val));
+      b.title = label;
+      b.setAttribute('role', 'radio');
+      b.setAttribute('aria-checked', String(current === val));
+      b.setAttribute('aria-label', val + ' — ' + label);
+      b.onclick = () => {
+        state.scores[key(c.id, a.id)] = val;
+        persist(); renderMatrix(); renderResults();
+      };
+      seg.append(b);
+    });
+
+    row.append(seg);
+    const anchor = SCALE.find(s => s[0] === current);
+    row.append(el('div', 'score-anchor', anchor ? anchor[1] : ''));
+    rows.append(row);
+
+    /* Begründung + Quelle, sofern für dieses Kriterium hinterlegt */
+    const ev = EVIDENCE[c.name] && EVIDENCE[c.name][state.alternatives.indexOf(a)];
+    if (ev) {
+      const det = el('details', 'why');
+      const sum = el('summary');
+      sum.append(el('span', 'why-grade grade-' + ev.g, gradeLabel(ev.g)));
+      sum.append(el('span', 'why-lead', 'Warum dieser Wert?'));
+      det.append(sum);
+      const body = el('div', 'why-body');
+      body.append(el('p', 'why-text', ev.t));
+      body.append(el('p', 'why-src', 'Quelle: ' + ev.s));
+      det.append(body);
+      rows.append(det);
+    }
+  });
+  host.append(rows);
+
+  /* Legende der Skala */
+  const legend = el('div', 'scale-legend');
+  legend.append(el('span', 'scale-legend-t', 'Skala'));
+  SCALE.forEach(([val, label]) => {
+    legend.append(el('span', 'scale-item', val + ' ' + label));
+  });
+  host.append(legend);
+
+  /* Übersicht: alle Werte auf einen Blick, ohne Bedienelemente */
+  const details = el('details', 'overview');
+  const summary = el('summary', null, 'Alle Bewertungen im Überblick');
+  details.append(summary);
+
+  const scroll = el('div', 'matrix-scroll'), table = el('table');
+  const thead = el('thead'), hr = el('tr');
+  hr.append(el('th', null, 'Kriterium'));
+  state.alternatives.forEach(a => hr.append(el('th', 'col-alt', a.name)));
+  thead.append(hr); table.append(thead);
+
+  const tbody = el('tbody');
+  active.forEach((crit, i) => {
+    const tr = el('tr', 'ov-row' + (i === focusIndex ? ' is-current' : ''));
+    tr.title = 'Zu diesem Kriterium springen';
+    tr.onclick = () => { focusIndex = i; renderMatrix(); };
+    const td = el('td', 'crit-cell');
+    td.append(el('div', 'nm', crit.name));
+    td.append(el('div', 'wt', (w.get(crit.id) || 0).toFixed(1) + ' % Gewicht'));
+    tr.append(td);
+    state.alternatives.forEach(a => {
+      tr.append(el('td', 'ov-val num', String(getScore(crit.id, a.id))));
+    });
+    tbody.append(tr);
+  });
+  table.append(tbody); scroll.append(table); details.append(scroll);
+  host.append(details);
+}
+
+/* ---------- Ergebnis ---------- */
+function renderResults() {
+  const host = $('#results'); host.innerHTML = '';
+  const active = activeCriteria(), results = computeResults();
+
+  if (active.length === 0 || results.length === 0) {
+    const e = el('div', 'empty');
+    e.append(el('strong', null, 'Noch kein Ergebnis'));
+    e.append(el('p', null, 'Sobald mindestens ein aktives Kriterium und eine Alternative vorliegen, erscheint hier die Rangfolge.'));
+    host.append(e);
+    return;
+  }
+
+  results.forEach((r, i) => {
+    const rank = i + 1, isOpen = openDetails.has(r.id);
+    const block = el('div', 'result' + (rank === 1 ? ' is-top' : '') + (isOpen ? ' is-open' : ''));
+    const head = el('button', 'result-head');
+    head.setAttribute('aria-expanded', String(isOpen));
+    head.append(el('span', 'rank num', String(rank)));
+    head.append(el('span', 'nm', r.name));
+    const track = el('div', 'bar-track'), fill = el('div', 'bar-fill');
+    fill.style.width = Math.max(r.percent, 0) + '%';
+    track.append(fill); head.append(track);
+    const total = el('span', 'total num', r.total.toFixed(2));
+    total.append(el('span', 'pct', r.percent.toFixed(1) + ' %'));
+    head.append(total);
+    head.append(el('span', 'chev', '›'));
+    head.onclick = () => {
+      if (openDetails.has(r.id)) openDetails.delete(r.id); else openDetails.add(r.id);
+      renderResults();
+    };
+    block.append(head);
+
+    if (isOpen) {
+      const detail = el('div', 'detail'), t = el('table');
+      const th = el('thead'), thr = el('tr');
+      ['Kriterium', 'Gewicht', 'Punkte', 'Beitrag'].forEach((h, j) => thr.append(el('th', j > 0 ? 'r' : null, h)));
+      th.append(thr); t.append(th);
+      const tb = el('tbody');
+      r.contributions.slice().sort((a, b) => b.contribution - a.contribution).forEach(c => {
+        const tr = el('tr');
+        tr.append(el('td', null, c.name));
+        tr.append(el('td', 'r num', c.nw.toFixed(1) + ' %'));
+        tr.append(el('td', 'r num', String(c.raw)));
+        tr.append(el('td', 'r num', c.contribution.toFixed(2)));
+        tb.append(tr);
+      });
+      t.append(tb); detail.append(t); block.append(detail);
+    }
+    host.append(block);
+  });
+
+  host.append(el('div', 'foot-note', 'Maximal erreichbar: ' + MAX_SCORE.toFixed(2) + ' Punkte bei durchgehend 5 von 5.'));
+  renderSticky(results);
+}
+
+/** Kompakte Rangfolge am unteren Rand — sichtbar, während man unten bearbeitet. */
+function renderSticky(results) {
+  const items = $('#sticky-items');
+  if (!items) return;
+  items.innerHTML = '';
+  results.slice(0, 5).forEach((r, i) => {
+    const it = el('div', 'sticky-item' + (i === 0 ? ' is-top' : ''));
+    it.append(el('span', 'r', String(i + 1)));
+    it.append(el('span', 'n', r.name));
+    it.append(el('span', 'v', r.total.toFixed(2)));
+    items.append(it);
+  });
+}
+
+/* ---------- Aktionen ---------- */
+function addCriterion() {
+  state.criteria.push({ id: uid(), name: 'Neues Kriterium', description: '', weight: 5, active: true });
+  persist(); renderAll();
+  const rows = document.querySelectorAll('.crit .field-name');
+  if (rows.length) rows[rows.length - 1].select();
+}
+
+function addAlternative() {
+  state.alternatives.push({ id: uid(), name: 'Neue Alternative' });
+  persist(); renderAll();
+  const rows = document.querySelectorAll('.alt .field-name');
+  if (rows.length) rows[rows.length - 1].select();
+}
+
+/** Bei Textänderung/Gewicht: abhängige Ansichten neu, Eingabefelder bleiben stehen. */
+function onEdit() {
+  persist();
+  renderBand(); renderMatrix(); renderResults(); updateCritSub();
+}
+
+function exportCsv() {
+  const active = activeCriteria(), w = normalizedWeights(), results = computeResults();
+  const esc = v => /[",;\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : String(v);
+  const header = ['Rang', 'Alternative']
+    .concat(active.map(c => c.name + ' (' + (w.get(c.id) || 0).toFixed(1) + '%)'))
+    .concat(['Gesamtnutzwert (0-10)', 'Gesamtnutzwert (%)']);
+  const rows = results.map((r, i) => [i + 1, r.name]
+    .concat(r.contributions.map(c => String(c.raw)))
+    .concat([r.total.toFixed(2), r.percent.toFixed(1)]));
+  const csv = [header].concat(rows).map(row => row.map(esc).join(';')).join('\n');
+
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'nutzwertanalyse-' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function renderAll() {
+  renderBand(); renderCriteria(); renderAlternatives(); renderMatrix(); renderResults();
+}
+
+/* ---------- Start ---------- */
+$('#btn-add-crit').onclick = addCriterion;
+$('#btn-add-alt').onclick = addAlternative;
+$('#btn-csv').onclick = exportCsv;
+
+$('#btn-save-catalog').onclick = async () => {
+  if (state.criteria.length === 0) return;
+  const name = await promptDialog('Katalog ' + new Date().toLocaleDateString('de-DE'));
+  if (name) {
+    state.catalogs.push({
+      id: uid(), name, savedAt: Date.now(),
+      criteria: state.criteria.map(c => Object.assign({}, c))
+    });
+    persist(); renderAll();
+  }
+};
+
+$('#btn-reset').onclick = async () => {
+  if (await confirmDialog('Auf Analysedaten zurücksetzen?',
+      'Alle eigenen Änderungen an Kriterien, Gewichtung, Alternativen und Bewertungen gehen verloren. Der Stand der bautask.de-Analyse wird wiederhergestellt.',
+      'Zurücksetzen')) {
+    openDetails.clear();
+    state = seedState();
+    persist(); renderAll();
+  }
+};
+
+setupDrag();
+renderAll();
+loadState().then(renderAll);
+
+/* Sticky-Leiste nur zeigen, wenn das Ergebnis-Panel nicht im Blick ist */
+(function setupSticky() {
+  const panel = $('#panel-results'), bar = $('#sticky-rank');
+  if (!panel || !bar) return;
+  bar.hidden = true;
+  $('#sticky-up').onclick = () => panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Leiste erscheint, sobald der untere Rand des Ergebnis-Panels nach oben herausgescrollt ist.
+  const update = () => { bar.hidden = panel.getBoundingClientRect().bottom > 90; };
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  setTimeout(update, 100);
+})();
+</script>
+</body>
+</html>
