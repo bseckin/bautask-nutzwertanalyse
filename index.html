@@ -202,6 +202,23 @@ dialog::backdrop{background:rgba(20,22,26,.35)}
 .sticky-item .v{font-weight:650;font-variant-numeric:tabular-nums}
 .sticky-item.is-top .r,.sticky-item.is-top .v{color:var(--accent)}
 .sticky-item.is-top .n{color:var(--ink);font-weight:550}
+/* Plane vs Linear Vergleich */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.compare-col{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.compare-head{padding:12px 16px;font-weight:650;font-size:15px;color:#fff;background:var(--ink-2)}
+.compare-head-plane{background:var(--accent)}
+.compare-head-linear{background:var(--ink)}
+.compare-block{padding:14px 16px}
+.compare-block + .compare-block{border-top:1px solid var(--line)}
+.compare-label{font-size:11px;font-weight:650;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px}
+.compare-label-pro{color:#1f6b3d}
+.compare-label-con{color:#a35a00}
+.compare-item{margin-bottom:12px}
+.compare-item:last-child{margin-bottom:0}
+.compare-item-title{font-size:13.5px;font-weight:600;margin-bottom:2px}
+.compare-item-body{font-size:13px;color:var(--ink-2);line-height:1.55}
+.compare-note{margin-top:16px;font-size:12px;color:var(--ink-3)}
+@media (max-width:760px){.compare-grid{grid-template-columns:1fr}}
 .saving{font-size:11.5px;color:var(--ink-3);align-self:center}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 @media (max-width:1080px){
@@ -255,6 +272,102 @@ dialog::backdrop{background:rgba(20,22,26,.35)}
       <div><h2>Bewertung</h2><p class="sub">Ein Kriterium nach dem anderen — alle Alternativen direkt vergleichbar.</p></div>
     </div>
     <div class="panel-body"><div id="matrix"></div></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>Plane.so vs. Linear — Vor- und Nachteile im Vergleich</h2><p class="sub">Zusammenfassung der Detailrecherche, unabhängig vom laufenden Scoring oben.</p></div>
+    </div>
+    <div class="panel-body">
+      <div class="compare-grid">
+
+        <div class="compare-col">
+          <div class="compare-head compare-head-plane">Plane.so</div>
+
+          <div class="compare-block">
+            <div class="compare-label compare-label-pro">Vorteile</div>
+            <div class="compare-item">
+              <div class="compare-item-title">Intake/Triage als Vor-Filter</div>
+              <div class="compare-item-body">Eingehende Anfragen landen in einem eigenen Zustand außerhalb des Projekt-Workflows, bevor sie akzeptiert werden — deckt die RE-Gatekeeper-Rolle ab, die Linear nicht abbildet.</div>
+            </div>
+            <div class="compare-item">
+              <div class="compare-item-title">Module als dauerhafte Kategorie</div>
+              <div class="compare-item-body">Einzige der beiden Architekturen mit einer Ebene, die nie „fertig&quot; sein muss — passt zu über 10 dauerhaften Produktbereichen bei bautask.</div>
+            </div>
+            <div class="compare-item">
+              <div class="compare-item-title">Custom Properties bereits ab Pro-Tarif</div>
+              <div class="compare-item-body">Erlaubt das Feld „Angefragt von&quot; ohne teuren Business-Tarif — rund 1.260&nbsp;$/Jahr Ersparnis bei 15 Nutzern gegenüber dem nativen Customers-Feature.</div>
+            </div>
+            <div class="compare-item">
+              <div class="compare-item-title">GitHub-Integration ausgereift</div>
+              <div class="compare-item-body">Zwei-Wege-Sync mit automatischer Status-Änderung bei PR-Merge — überraschend nah an Linear, trotz insgesamt dünnerer Integrationsbreite.</div>
+            </div>
+          </div>
+
+          <div class="compare-block">
+            <div class="compare-label compare-label-con">Nachteile</div>
+            <div class="compare-item">
+              <div class="compare-item-title">Geschwindigkeit/Bedienung</div>
+              <div class="compare-item-body">Unabhängig belegt: „trails Linear on keyboard shortcut polish and raw speed&quot; — betrifft jede tägliche Interaktion der 4 Entwickler.</div>
+            </div>
+            <div class="compare-item">
+              <div class="compare-item-title">Integrationsbreite generell</div>
+              <div class="compare-item-body">Slack, Figma, Sentry u.&nbsp;a. sind bei Linear tiefer eingebunden; Plane oft nur über Custom-Links.</div>
+            </div>
+            <div class="compare-item">
+              <div class="compare-item-title">Kein automatischer CRM-Sync bei Customers</div>
+              <div class="compare-item-body">Revenue-/Tier-/Stage-Felder vorhanden, aber manuell zu pflegen statt live aus einem CRM synchronisiert.</div>
+            </div>
+            <div class="compare-item">
+              <div class="compare-item-title">Kein natives Priorisierungs-Scoring</div>
+              <div class="compare-item-body">Nur einfaches Prioritätsfeld — das Kernproblem der Priorisierung bleibt vollständig Eigenbau.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="compare-col">
+          <div class="compare-head compare-head-linear">Linear</div>
+
+          <div class="compare-block">
+            <div class="compare-label compare-label-pro">Vorteile</div>
+            <div class="compare-item">
+              <div class="compare-item-title">Geschwindigkeit/Bedienung</div>
+              <div class="compare-item-body">Der spürbarste Alltagsvorteil — betrifft die 4 Entwickler bei jeder Aktion, nicht nur gelegentlich.</div>
+            </div>
+            <div class="compare-item">
+              <div class="compare-item-title">Customer Requests mit Live-CRM-Sync</div>
+              <div class="compare-item-body">Umsatz/Tier/Größe automatisch aus Intercom/Zendesk/Salesforce/Front — bei bautask aber nur relevant, wenn eines dieser Tools genutzt wird (aktuell: Pipedrive, nicht in der Liste).</div>
+            </div>
+            <div class="compare-item">
+              <div class="compare-item-title">Reifere Integrationslandschaft</div>
+              <div class="compare-item-body">Slack, Figma, Sentry, GitHub tiefer und stabiler eingebunden.</div>
+            </div>
+          </div>
+
+          <div class="compare-block">
+            <div class="compare-label compare-label-con">Nachteile</div>
+            <div class="compare-item">
+              <div class="compare-item-title">Kein Intake/Vor-Filter</div>
+              <div class="compare-item-body">Anfragen landen sofort als vollwertiges Issue im Backlog — es gibt keinen erzwungenen Prüfschritt davor.</div>
+            </div>
+            <div class="compare-item">
+              <div class="compare-item-title">Keine dauerhafte Kategorie-Ebene</div>
+              <div class="compare-item-body">Project ist zielgebunden mit Enddatum; für „Abrechnung&quot; als nie fertigen Bereich bräuchte es ein Label — ohne eigenen Fortschritt oder Filteransicht.</div>
+            </div>
+            <div class="compare-item">
+              <div class="compare-item-title">Kein natives Priorisierungs-Scoring</div>
+              <div class="compare-item-body">Identisch schwach wie Plane — kein Unterschied zwischen den beiden Tools an dieser Stelle.</div>
+            </div>
+            <div class="compare-item">
+              <div class="compare-item-title">Pipedrive kein unterstütztes CRM für Customer Requests</div>
+              <div class="compare-item-body">Der CRM-Sync-Vorteil oben entfällt bei bautasks tatsächlichem Stack faktisch.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="compare-note">Diese Gegenüberstellung ist eine feste Zusammenfassung der Detailrecherche zu Plane.so und Linear — unabhängig von der oben editierbaren Nutzwertanalyse, die auf 11 Kriterien für alle fünf Tools rechnet.</div>
+    </div>
   </section>
 
 
